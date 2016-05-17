@@ -26,6 +26,11 @@
   white-space: normal;
 }
 
+.carousel__item--vertical {
+  box-sizing: border-box;
+  white-space: normal;
+}
+
 .carousel__control {
   display: block;
   position: absolute;
@@ -63,6 +68,11 @@
   background-color: #fff;
 }
 
+.example-node--vertical {
+  height: 100%;
+  background-color: #fff;
+}
+
 .example-node__title {
   margin-bottom: 0;
   padding-right: 16px;
@@ -88,6 +98,6 @@
 }
 
 .example-node__image {
-  height: 200px;
+  height: 50px;
   background-color: rgb(70, 130, 180);
 }
