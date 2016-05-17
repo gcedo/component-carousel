@@ -11,67 +11,82 @@ export default class Carousel extends React.Component {
     this.handlePreviousClick = this.handleControlClick.bind(this, 'previous');
     this.handleNextClick = this.handleControlClick.bind(this, 'next');
     this.state = {
-      listElementWidth: 0,
-      listWidth: 0,
+      listElementDimension: 0,
+      listDimension: 0,
     };
   }
 
   componentDidMount() {
     const { scroller: scrollerElement } = this.refs;
-    const { children, gutter, scrollerOptions, visibleItems } = this.props;
-    const listElementWidth = (scrollerElement.offsetWidth + gutter) / visibleItems;
+    const { children, gutter, scrollerOptions, vertical, visibleItems } = this.props;
+    const listElementDimension = this.props.vertical ?
+      (scrollerElement.offsetHeight + gutter) / visibleItems :
+      (scrollerElement.offsetWidth + gutter) / visibleItems;
     this.setState({ // eslint-disable-line react/no-did-mount-set-state
-      listElementWidth,
-      listWidth: listElementWidth * children.length,
+      listElementDimension,
+      listDimension: listElementDimension * children.length,
     }, () => {
-      this.scroller = new Scroller(scrollerElement, scrollerOptions);
+      this.scroller = new Scroller(
+        scrollerElement,
+        Object.assign({}, scrollerOptions, { scrollingY: vertical, scrollingX: !vertical })
+      );
     });
   }
 
-  handleControlClick(role, event) {
+  handleControlClick(direction, event) {
     event.stopPropagation();
-    const horizontalScroll = role === 'previous' ? -this.state.listElementWidth : this.state.listElementWidth;
-    this.scroller.scrollBy(horizontalScroll, 0, true);
+    const { listElementDimension } = this.state;
+    const scrollSpan = direction === 'previous' ? -listElementDimension : listElementDimension;
+    if (this.props.vertical) {
+      this.scroller.scrollBy(0, scrollSpan, true);
+    } else {
+      this.scroller.scrollBy(scrollSpan, 0, true);
+    }
     event.preventDefault();
   }
 
   render() {
-    const { children, controlNodes, gutter, showControls } = this.props;
+    const { children, gutter, nextButton, previousButton, vertical } = this.props;
     const carouselItems = children.map(
       (child, index) =>
         <CarouselItem
           key={index}
-          width={this.state.listElementWidth}
+          dimension={this.state.listElementDimension}
           gutter={gutter}
+          vertical={vertical}
         >
           {child}
         </CarouselItem>
     );
-    const controlPrevious = (
-      <CarouselControl
-        direction="previous"
-        onClick={this.handlePreviousClick}
-      >
-        {controlNodes.previous}
-      </CarouselControl>
-   );
-    const controlNext = (
-      <CarouselControl
-        direction="next"
-        onClick={this.handleNextClick}
-      >
-        {controlNodes.next}
-      </CarouselControl>
-     );
     return (
       <div className="carousel">
-        {showControls && controlPrevious}
+        {
+          previousButton &&
+          <CarouselControl
+            direction="previous"
+            onClick={this.handlePreviousClick}
+          >
+            {previousButton}
+          </CarouselControl>
+        }
         <div className="carousel__wrapper" ref="scroller">
-          <CarouselList gutter={gutter} width={this.state.listWidth}>
+          <CarouselList
+            dimension={this.state.listDimension}
+            gutter={gutter}
+            vertical={vertical}
+          >
             {carouselItems}
           </CarouselList>
         </div>
-        {showControls && controlNext}
+        {
+          nextButton &&
+          <CarouselControl
+            direction="next"
+            onClick={this.handleNextClick}
+          >
+            {nextButton}
+          </CarouselControl>
+        }
       </div>
     );
   }
@@ -80,26 +95,56 @@ export default class Carousel extends React.Component {
 Carousel.defaultProps = {
   scrollerOptions: {
     scrollbars: false,
-    scrollingY: false,
     updateOnWindowResize: true,
   },
-  showControls: true,
   visibleItems: 4,
 };
 
 if (process.env.NODE_ENV !== 'production') {
   Carousel.propTypes = {
     children: React.PropTypes.arrayOf(React.PropTypes.node),
-    controlNodes: React.PropTypes.shape({
-      next: React.PropTypes.node,
-      previous: React.PropTypes.node,
-    }),
+    nextButton: React.PropTypes.node,
+    previousButton: React.PropTypes.node,
     gutter: React.PropTypes.number,
     scrollerOptions: React.PropTypes.shape({
-      // Full list of available options https://www.npmjs.com/package/ftscroller
+      alwaysScroll: React.PropTypes.bool,
+      baseAlignments: React.PropTypes.shape({
+        x: React.PropTypes.number,
+        y: React.PropTypes.number,
+      }),
+      bouncing: React.PropTypes.bool,
+      contentWidth: React.PropTypes.number,
+      contentHeight: React.PropTypes.number,
+      disabledInputMethods: React.PropTypes.shape({
+        mouse: React.PropTypes.bool,
+        touch: React.PropTypes.bool,
+        scroll: React.PropTypes.bool,
+        pointer: React.PropTypes.bool,
+        focus: React.PropTypes.bool,
+      }),
+      enableRequestAnimationFrameSupport: React.PropTypes.bool,
+      flinging: React.PropTypes.bool,
+      hwAccelerationClass: React.PropTypes.string,
+      maxFlingDuration: React.PropTypes.number,
       scrollbars: React.PropTypes.bool,
+      scrollBoundary: React.PropTypes.number,
+      scrollingClassName: React.PropTypes.string,
+      scrollResponseBoundary: React.PropTypes.number,
+      scrollingX: React.PropTypes.bool,
+      scrollingY: React.PropTypes.bool,
+      singlePageScrolls: React.PropTypes.bool,
+      snapping: React.PropTypes.bool,
+      snapSizeX: React.PropTypes.number,
+      snapSizeY: React.PropTypes.number,
+      updateOnChanges: React.PropTypes.bool,
+      updateOnWindowResize: React.PropTypes.bool,
+      windowScrollingActiveFlag: React.PropTypes.string,
+      flingBezier: React.PropTypes.string,
+      bounceDecelerationBezier: React.PropTypes.string,
+      bounceBezier: React.PropTypes.string,
+      invertScrollWheel: React.PropTypes.bool,
     }),
-    showControls: React.PropTypes.bool,
+    vertical: React.PropTypes.bool,
     visibleItems: React.PropTypes.number,
   };
 }

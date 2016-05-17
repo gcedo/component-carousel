@@ -26,6 +26,11 @@
   white-space: normal;
 }
 
+.carousel__item--vertical {
+  box-sizing: border-box;
+  white-space: normal;
+}
+
 .carousel__control {
   display: block;
   position: absolute;

@@ -1,13 +1,18 @@
 import React from 'react';
 
-export default function CarouselList({ children, gutter, width }) {
-  const style = {
-    width: `${ width }px`,
-    marginLeft: `${ -gutter / 2 }px`,
-    marginRight: `${ -gutter / 2 }px`,
-  };
+export default function CarouselList({ children, dimension, gutter, vertical }) {
+  const style = {};
+  if (vertical) {
+    style.height = `${ dimension }px`;
+    style.marginTop = `${ -gutter / 2 }px`;
+    style.marginBottom = `${ -gutter / 2 }px`;
+  } else {
+    style.width = `${ dimension }px`;
+    style.marginLeft = `${ -gutter / 2 }px`;
+    style.marginRight = `${ -gutter / 2 }px`;
+  }
   return (
-    <ul className="carousel__list" style={style}>
+    <ul className={`carousel__list${ vertical ? ' --vertical' : '' }`} style={style}>
       {children}
     </ul>
   );
@@ -15,8 +20,9 @@ export default function CarouselList({ children, gutter, width }) {
 
 if (process.env.NODE_ENV !== 'production') {
   CarouselList.propTypes = {
-    gutter: React.PropTypes.number,
     children: React.PropTypes.node,
-    width: React.PropTypes.number,
+    dimension: React.PropTypes.number,
+    gutter: React.PropTypes.number,
+    vertical: React.PropTypes.bool,
   };
 }

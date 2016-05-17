@@ -1,6 +1,6 @@
 import 'babel-polyfill';
 import Carousel from '../src';
-import CarouselExample from '../src/example';
+import { horizontalNodes } from '../src/example';
 import React from 'react';
 import chai from 'chai';
 import chaiEnzyme from 'chai-enzyme';
@@ -16,7 +16,16 @@ describe('Carousel', () => {
     let rendered = null;
     let carousel = null;
     beforeEach(() => {
-      rendered = mount(CarouselExample);
+      rendered = mount(
+        <Carousel
+          nextButton={<span>▶</span>}
+          previousButton={<span>◀</span>}
+          gutter={22.5}
+          visibleItems={4}
+        >
+          {horizontalNodes}
+        </Carousel>
+      );
       carousel = rendered.find('.carousel');
     });
 
