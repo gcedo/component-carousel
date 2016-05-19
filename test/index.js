@@ -21,7 +21,7 @@ describe('Carousel', () => {
         <Carousel
           nextButton={<span>▶</span>}
           previousButton={<span>◀</span>}
-          gutter={22.5}
+          gutter={10}
           visibleItems={4}
         >
           {horizontalNodes}
@@ -45,14 +45,14 @@ describe('Carousel', () => {
     it('computes the correct dimensions', () => {
       const carouselList = carousel.find('.carousel__list');
       carouselList.children().forEach((carouselItem) => {
-        carouselItem.should.have.style('paddingRight', '11.25px');
-        carouselItem.should.have.style('paddingLeft', '11.25px');
+        carouselItem.should.have.style('paddingRight', '5px');
+        carouselItem.should.have.style('paddingLeft', '5px');
       });
-      carouselList.should.have.style('width', '28.125px');
-      carouselList.should.have.style('marginLeft', '-11.25px');
-      carouselList.should.have.style('marginRight', '-11.25px');
+      carouselList.should.have.style('width', '12.5px');
+      carouselList.should.have.style('marginLeft', '-5px');
+      carouselList.should.have.style('marginRight', '-5px');
       carouselList.children().forEach((carouselItem) => {
-        carouselItem.should.have.style('width', '5.625px');
+        carouselItem.should.have.style('width', '2.5px');
       });
     });
 

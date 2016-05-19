@@ -2,7 +2,6 @@ import CarouselList from './parts/carousel-list';
 import CarouselItem from './parts/carousel-item';
 import CarouselControl from './parts/carousel-control';
 import React from 'react';
-import Scroller from 'ftscroller';
 
 export default class Carousel extends React.Component {
 
@@ -17,11 +16,18 @@ export default class Carousel extends React.Component {
   }
 
   componentDidMount() {
+    // ftscroller must be required only on the client, as it accesses window.document on require
+    const Scroller = require('ftscroller').FTScroller; // eslint-disable-line global-require
     const { scroller: scrollerElement } = this.refs;
-    const { children, gutter, scrollerOptions, vertical, visibleItems } = this.props;
-    const listElementDimension = this.props.vertical ?
-      (scrollerElement.offsetHeight + gutter) / visibleItems :
-      (scrollerElement.offsetWidth + gutter) / visibleItems;
+    const { children, gutter, scrollerOptions, vertical, visibleItems, width } = this.props;
+    let listElementDimension = 0;
+    if (width) {
+      listElementDimension = width;
+    } else {
+      listElementDimension = this.props.vertical ?
+        (scrollerElement.offsetHeight + gutter) / visibleItems :
+        (scrollerElement.offsetWidth + gutter) / visibleItems;
+    }
     this.setState({ // eslint-disable-line react/no-did-mount-set-state
       listElementDimension,
       listDimension: listElementDimension * children.length,
@@ -146,5 +152,6 @@ if (process.env.NODE_ENV !== 'production') {
     }),
     vertical: React.PropTypes.bool,
     visibleItems: React.PropTypes.number,
+    width: React.PropTypes.number,
   };
 }
