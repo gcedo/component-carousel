@@ -36,6 +36,9 @@ export default class Carousel extends React.Component {
         scrollerElement,
         Object.assign({}, scrollerOptions, { scrollingY: vertical, scrollingX: !vertical })
       );
+      if (typeof this.props.onScrollerCreated === 'function') {
+        this.props.onScrollerCreated(this.scroller);
+      }
     });
   }
 
@@ -112,6 +115,7 @@ if (process.env.NODE_ENV !== 'production') {
     nextButton: React.PropTypes.node,
     previousButton: React.PropTypes.node,
     gutter: React.PropTypes.number,
+    onScrollerCreated: React.PropTypes.func,
     scrollerOptions: React.PropTypes.shape({
       alwaysScroll: React.PropTypes.bool,
       baseAlignments: React.PropTypes.shape({
