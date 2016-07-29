@@ -76,6 +76,25 @@ describe('Carousel', () => {
       carousel.find('.carousel__control--previous').simulate('click');
       spiedHandlePreviousClick.should.have.been.called.exactly(1);
     });
+
   });
 
+  describe('onScrollerCreated callback', () => {
+    it('calls the callback when the scroller is created', () => {
+      const spiedOnScrollerCreated = chai.spy((scroller) => scroller);
+      const rendered = mount(
+        <Carousel
+          onScrollerCreated={spiedOnScrollerCreated}
+          nextButton={<span>▶</span>}
+          previousButton={<span>◀</span>}
+          gutter={10}
+          visibleItems={4}
+        >
+          {horizontalNodes}
+        </Carousel>
+      );
+      spiedOnScrollerCreated.should.have.been.called.exactly(1);
+      spiedOnScrollerCreated.should.have.been.called.with(rendered.get(0).scroller);
+    });
+  });
 });
